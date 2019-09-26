@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import homePage from '@/components/homePage'
+import Ops from '@/views/Ops/index'
 
 Vue.use(Router)
 
@@ -18,7 +19,29 @@ export default new Router({
           title: '首页',
           icon: 'dashboard',
           noCache: true,
-          hidden: true
+          hidden: false
+        },
+        hidden: false
+      }]
+    },
+    {
+      path: '/OpsData',
+      component: Ops,
+      redirect: 'noredirect',
+      hidden: true,
+      name: '运营数据',
+      meta: {
+        title: '运营数据',
+        icon: 'statistical'
+      },
+      children: [{
+        path: '/profit',
+        component: () => import('@/views/Ops/profit'),
+        name: '内容热度',
+        meta: {
+          title: '内容热度',
+          noCache: true,
+          hidden: false
         },
         hidden: false
       }]
