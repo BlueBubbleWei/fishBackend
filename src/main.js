@@ -7,16 +7,19 @@ import axios from 'axios'
 import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css' /* 引入elementui css */
-import VueRouter from 'vue-router'
+// import VueRouter from 'vue-router'
+import Nav from './components/Nav'
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
 Vue.use(ElementUI)
-Vue.use(VueRouter)
+// Vue.use(VueRouter)
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  // render 会让模板由APP变为Nav
+  render: h => h(Nav),
   router,
   store,
   components: { App },
