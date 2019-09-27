@@ -1,6 +1,6 @@
 <template>
     <div>
-        收益信息
+        留存信息
     </div>
 </template>
 <script type="text/ecmascript-6">
