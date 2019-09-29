@@ -8,7 +8,7 @@
         :index="parent ? parent + '/' + item.path : item.path"
       >
         <i :class="item.meta.icon"></i>
-        <span slot="title">{{ item.meta.title }}</span>
+        <span slot="title">{{$t(item.meta.title)}}</span>
       </el-menu-item>
 
       <!-- 此菜单下还有子菜单 -->
@@ -19,7 +19,7 @@
       >
         <template slot="title">
           <i :class="item.meta.icon"></i>
-          <span>{{ item.meta.title }}</span>
+          <span>{{ $t(item.meta.title )}}</span>
         </template>
         <!-- 递归 -->
         <sidebar-item

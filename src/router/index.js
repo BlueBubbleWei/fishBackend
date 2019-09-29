@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/views/layout/layout'
 
+// console.log('common', route)
 Vue.use(Router)
 // 如首页和登录页和一些不用权限的公用页面
 export const commontRouterMap = [{
@@ -30,7 +31,8 @@ export const asyncRouterMap = [{
   path: '/home',
   component: Layout,
   meta: {
-    title: '捕鱼H5后台',
+    title: 'route.home',
+    // title: '捕鱼H5后台',
     icon: 'el-icon-menu'
   }
 },
@@ -40,7 +42,7 @@ export const asyncRouterMap = [{
   redirect: '/OpsData/index',
   name: '运营数据',
   meta: {
-    title: '运营数据',
+    title: 'route.Ops',
     icon: 'el-icon-tickets'
     // role: ['0', '1', '2']
   },
@@ -50,7 +52,7 @@ export const asyncRouterMap = [{
     component: () =>
           import('@/views/Ops/index'),
     meta: {
-      title: '收益信息'
+      title: 'route.profit'
       // role: ['0']
     }
   },
