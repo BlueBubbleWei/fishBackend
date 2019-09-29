@@ -30,7 +30,7 @@ export const asyncRouterMap = [{
   path: '/home',
   component: Layout,
   meta: {
-    title: '首页',
+    title: '捕鱼H5后台',
     icon: 'el-icon-menu'
   }
 },

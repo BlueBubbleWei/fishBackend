@@ -1,4 +1,5 @@
 import { asyncRouterMap, commontRouterMap } from '@/router'
+import Cookies from 'js-cookie'
 
 function hasPermission (roles, route) {
   if (route.meta && route.meta.role) {
@@ -35,16 +36,24 @@ export function filterAsyncRoutes (routes, roles) {
 
 const router = {
   state: {
+    language: Cookies.get('language') || 'zh',
     routers: commontRouterMap,
     addRouters: []
   },
   mutations: {
+    SET_LANGUAGE: (state, language) => {
+      state.language = language
+      Cookies.set('language', language)
+    },
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers
       state.routers = commontRouterMap.concat(routers)
     }
   },
   getters: {
+    language: state => {
+      return state.language
+    },
     getaddRouters: state => state.addRouters,
     getrouters: state => state.routers
   },

@@ -1,5 +1,5 @@
 <template>
-  <div>hello world</div>
+  <div>hello world ssss{{$t('route.home')}}</div>
 </template>
 
 <script>

@@ -13,8 +13,10 @@
     <!-- 右侧下拉菜单 -->
     <el-dropdown class="avatar-container" id="header-right">
       <span>
-        <img :src="getavatar + '?imageView2/1/w/40/h/40'" class="user-avatar">
+        <img src="../../../../../user/user.png" class="user-avatar">
+        <!-- <img :src="getavatar + '?imageView2/1/w/40/h/40'" class="user-avatar"> -->
       </span>
+      <language />
       <el-dropdown-menu slot="dropdown">
         <router-link to="/">
           <el-dropdown-item>Home</el-dropdown-item>
@@ -27,8 +29,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import language from '../../../../components/language'
 export default {
+  components: {
+    language
+  },
   methods: {
+
     toggleSideBar () {
       this.$store.dispatch('ToggleSideBar')
     },
@@ -68,6 +75,8 @@ export default {
 .user-avatar {
   border-radius: 10px;
   cursor: pointer;
+      width: 40px;
+    height: 40px;
 }
 #header-sidebar-open-close {
   display: inline-block;

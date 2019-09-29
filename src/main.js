@@ -6,15 +6,21 @@ import router from './router'
 import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css' /* 引入elementui css */
+import serviceManger from '@/service/index' // 请求服务的所有代码
 // Vue.config.productionTip = false
 
 import './utils/permission'
-import serviceManger from '@/service/index' // 请求服务的所有代码
 import '../mock/index' // mock.js
 import Router from 'vue-router'
+import i18n from './lang'
+import echarts from 'echarts'
 
 Vue.prototype.$serviceManger = serviceManger
-Vue.use(ElementUI)
+Vue.prototype.$echarts = echarts
+// Vue.use(ElementUI)
+Vue.use(ElementUI, {
+  i18n: (key, value) => i18n.t(key, value)
+})
 const originalPush = Router.prototype.push
 Router.prototype.push = function push (location) {
   return originalPush.call(this, location).catch(err => err)
@@ -22,5 +28,6 @@ Router.prototype.push = function push (location) {
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app')
