@@ -8,7 +8,7 @@
         :index="parent ? parent + '/' + item.path : item.path"
       >
         <i :class="item.meta.icon"></i>
-        <span slot="title">{{$t(item.meta.title)}}</span>
+        <span slot="title">{{ item.meta.title }}</span>
       </el-menu-item>
 
       <!-- 此菜单下还有子菜单 -->
@@ -19,7 +19,7 @@
       >
         <template slot="title">
           <i :class="item.meta.icon"></i>
-          <span>{{ $t(item.meta.title )}}</span>
+          <span>{{ item.meta.title }}</span>
         </template>
         <!-- 递归 -->
         <sidebar-item
@@ -37,6 +37,17 @@ export default {
   props: ['menu', 'parent'],
   data () {
     return {}
+  },
+  watch: {
+    menu: function (newVal, oldVal) {
+      console.log('~~~~~', newVal)
+    }
+  },
+  mounted () {
+
+  },
+  methods: {
+
   }
 }
 </script>

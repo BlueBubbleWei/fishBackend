@@ -10,7 +10,7 @@
     .sidebar-container {
       transition: width 0.28s;
       width: $sideBarWidth !important;
-      background-color: $menuBg;
+      background-color: #99a9bf;
       height: 100%;
       position: fixed;
       font-size: 0px;
@@ -64,7 +64,7 @@
       .submenu-title-noDropdown,
       .el-submenu__title {
         &:hover {
-          background-color: $menuHover !important;
+          background-color: #454545 !important;
         }
       }
   
@@ -75,10 +75,10 @@
       & .nest-menu .el-submenu>.el-submenu__title,
       & .el-submenu .el-menu-item {
         min-width: $sideBarWidth !important;
-        background-color: $subMenuBg !important;
+        background-color: #666 !important;
   
         &:hover {
-          background-color: $subMenuHover !important;
+          background-color: #777 !important;
         }
       }
     }
@@ -133,7 +133,7 @@
     .el-menu-item {
       &:hover {
         // you can use $subMenuHover
-        background-color: $menuHover !important;
+        background-color: #777 !important;
       }
     }
   

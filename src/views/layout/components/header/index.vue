@@ -13,10 +13,10 @@
     <!-- 右侧下拉菜单 -->
     <el-dropdown class="avatar-container" id="header-right">
       <span>
-        <img src="../../../../../user/user.png" class="user-avatar">
+        <img src="../../../../assets/user/user.png" class="user-avatar">
         <!-- <img :src="getavatar + '?imageView2/1/w/40/h/40'" class="user-avatar"> -->
       </span>
-      <language />
+      <!-- <language /> -->
       <el-dropdown-menu slot="dropdown">
         <router-link to="/">
           <el-dropdown-item>Home</el-dropdown-item>
@@ -29,11 +29,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import language from '../../../../components/language'
+// import language from '../../../../components/language'
 export default {
-  components: {
-    language
-  },
+  // components: {
+  //   language
+  // },
   methods: {
 
     toggleSideBar () {

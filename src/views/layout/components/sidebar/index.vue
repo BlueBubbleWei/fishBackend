@@ -2,9 +2,9 @@
   <div>
     <el-menu
       :default-active="$route.path"
-      :background-color="variables.menuBg"
+      background-color="#545c64"
       :text-color="variables.menuText"
-      :active-text-color="variables.menuActiveText"
+      active-text-color="#999"
       mode="vertical"
       router
       :collapse="isCollapse"
