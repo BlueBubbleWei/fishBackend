@@ -161,18 +161,6 @@
     <p class="keyword">炮术成长分布表</p>
     <div class="userID">
       <div class="source paoshu">
-        <p>渠道</p>
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <el-button type="primary">查询</el-button>
-      </div>
-      <div class="source paoshu">
         <div class="block paoshu-time">
           <span class="demonstration">开始时间</span>
           <el-date-picker
@@ -311,16 +299,8 @@
 export default {
   data() {
     return {
-      value: '', // 渠道
       start: '', // 开始日期
       end: '', // 结束日期
-      options: [{
-        value: '选项1',
-        label: 'QQ'
-      }, {
-        value: '选项2',
-        label: '其他'
-      }],
       pickerOptions1: {
         shortcuts: [
           {
@@ -352,15 +332,17 @@ export default {
               date.setTime(date.getTime() - 3600 * 1000 * 24 * 30)
               picker.$emit('pick', date)
             }
+          },
+          {
+            text: '当前月',
+            onClick(picker) {
+              const date = new Date()
+              const day = now.getDate()// 得到日期
+              console.log(day)
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', date)
+            }
           }
-          // {  这个还没有计算
-          //   text: '当前月',
-          //   onClick(picker) {
-          //     const date = new Date()
-          //     date.setTime(date.getTime() - 3600 * 1000 * 24 * 30)
-          //     picker.$emit('pick', date)
-          //   }
-          // }
         ]
       },
       value2: '',
