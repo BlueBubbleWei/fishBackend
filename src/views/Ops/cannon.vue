@@ -31,7 +31,7 @@
       <el-button type="primary">查询</el-button>
     </div>
     <el-table
-      :data="tableData3"
+      :data="tableData"
       border
       :header-cell-style="{'text-align':'center'}"
       :cell-style="{'text-align':'center'}"
@@ -167,6 +167,7 @@
             v-model="start"
             type="date"
             placeholder="选择日期"
+            @change="startTime"
           />
         </div>
         <div class="block paoshu-time">
@@ -175,15 +176,17 @@
             v-model="end"
             type="date"
             placeholder="选择日期"
+            @change="endTime"
           />
         </div>
-        <el-button type="primary">确定</el-button>
+        <el-button type="primary" @click="handleSelect">确定</el-button>
       </div>
 
     </div>
     <el-table
-      :data="tableData3"
+      :data="tableData"
       border
+      fit
       :header-cell-style="{'text-align':'center'}"
       :cell-style="{'text-align':'center'}"
       style="width: 100%"
@@ -191,103 +194,93 @@
     >
       <el-table-column
         fixed
-        prop="date"
+        prop="registerTime"
         label="注册日期"
         width="180"
       />
       <el-table-column
-        prop="source"
+        prop="day"
         label="天数"
         width="100"
       />
-      <el-table-column
+      <el-table-column v-for="(item, index) in nameList" :key="index" :label="item">
+        <template slot-scope="scope">
+          <span>{{ scope.row.list[index].num }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column
         prop="total"
         label="1炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="5炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="10炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="20炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="30炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="80炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="50炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="60炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="70炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="80炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="90炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="100炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="150炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="200炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="250炮"
-        width="80"
       />
       <el-table-column
         prop="lanzuan"
         label="300炮"
-      />
+      /> -->
     </el-table>
     <!-- 分页 -->
     <div class="block pagination">
       <el-pagination
-        :current-page="currentPage3"
-        :page-sizes="[100, 200, 300, 800]"
-        :page-size="100"
+        :current-page="currentPage"
+        :page-sizes="[1, 10, 20, 30]"
+        :page-size="1"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="800"
+        :total="totalSize"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -296,89 +289,96 @@
 
 </template>
 <script >
+import { getGunLevelStatistics } from '@/api/Ops'
 export default {
   data() {
     return {
-      start: '', // 开始日期
-      end: '', // 结束日期
-      pickerOptions1: {
-        shortcuts: [
-          {
-            text: '今天',
-            onClick(picker) {
-              picker.$emit('pick', new Date())
-            }
-          },
-          {
-            text: '昨天',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
-              picker.$emit('pick', date)
-            }
-          },
-          {
-            text: '7天',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', date)
-            }
-          },
-          {
-            text: '30天',
-            onClick(picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 30)
-              picker.$emit('pick', date)
-            }
-          },
-          {
-            text: '当前月',
-            onClick(picker) {
-              const date = new Date()
-              const day = now.getDate()// 得到日期
-              console.log(day)
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 30)
-              picker.$emit('pick', date)
-            }
-          }
-        ]
-      },
-      value2: '',
-      tableData3: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4
+      start: new Date(), // 开始日期
+      end: new Date(), // 结束日期
+      tableData: [],
+      totalSize: 0,
+      currentPage: 1,
+      pageSize: 30,
+      nameList: [],
+      fullData: []
     }
   },
+  created() {
+    this.getData()
+  },
   methods: {
+    getData() {
+      const params = {
+        beginTime: this.start,
+        endTime: this.end,
+        page: this.currentPage,
+        size: this.pageSize
+
+      }
+      console.log(this.params)
+      getGunLevelStatistics(params).then(res => {
+        const data = res.content
+        data.map((item, index) => {
+          const eachData = {}
+          const list = []
+          eachData['registerTime'] = item.registerTime
+          eachData['day'] = item.day
+          item.gunLevelList.map((ele, idx) => {
+            let currentIds = idx
+            if (currentIds === 0) { // 1炮
+              currentIds += 1
+            } else if (currentIds < 3) { // 10炮
+              currentIds *= 5
+            } else if (currentIds < 11) { // 100炮
+              currentIds = (currentIds - 1) * 10
+            } else if (currentIds < 29) { // 1000炮
+              currentIds = 100 * (currentIds - 10) + 50 * (currentIds - 11)
+            }
+            // if (index === 0) {
+            //   console.log('-----', (index > 2 && (this.nameList[index].length > this.nameList[index - 1].length)))
+            //   this.nameList.push(currentIds + '炮')
+            // }
+            list.push({ name: currentIds + '炮', 'num': currentIds })
+          })
+          eachData['list'] = list
+          this.tableData.push(eachData)
+        })
+        console.log(this.nameList, 'this.nameList')
+        console.log(this.tableData)
+        this.totalSize = Number.parseInt(res.totalElements)
+      }).catch(res => {
+        this.$message({
+          type: 'error',
+          message: '获取列表失败'
+        })
+      })
+    },
+    handleSelect() {
+      this.totalSize = 0
+      this.currentPage = 1
+      this.pageSize = 30
+      this.getData()
+    },
+    startTime() {
+      const date = new Date(this.start)
+      return date.getFullYear() + '-' + this.p(date.getMonth() + 1) + '-' + date.getDate()
+    },
+    endTime() {
+      const date = new Date(this.end)
+      return date.getFullYear() + '-' + this.p(date.getMonth() + 1) + '-' + date.getDate()
+    },
+    p(s) {
+      return s < 10 ? '0' + s : s
+    },
     handleSizeChange(val) {
+      this.pageSize = val
+      this.currentPage = 1
+      this.getData()
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
+      this.currentPage = val
+      this.getData()
       console.log(`当前页: ${val}`)
     }
   }
@@ -389,7 +389,7 @@ export default {
   padding: 10px;
 }
 .userID {
-   margin-left: 8%;
+   margin-left: 31%;
   p {
     display: inline-block;
     float: left;
@@ -412,6 +412,7 @@ export default {
 }
 .paoshu{
   float: left;
+      margin: 5px 0;
 }
 .time {
   clear: both;
