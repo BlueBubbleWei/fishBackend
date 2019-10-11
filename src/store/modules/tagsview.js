@@ -1,41 +1,165 @@
-const tagsview = {
-  state: {
-    visitedviews: [] // 存放所有浏览过的且不重复的路由数据
-  },
-  mutations: { // 这
-    ADD_VISITED_VIEWS: (state, view) => { // 打开新页签--添加路由数据的方法      if(state.visitedviews.some(v=>v.path==view.path))return;
-      state.visitedviews.push({
-        name: view.name,
-        path: view.path,
-        title: view.meta.title || 'no-title'
+const state = {
+  visitedViews: [],
+  cachedViews: []
+}
+
+const mutations = {
+  ADD_VISITED_VIEW: (state, view) => {
+    if (state.visitedViews.some(v => v.path === view.path)) return
+    state.visitedViews.push(
+      Object.assign({}, view, {
+        title: view.meta.title || 'no-name'
       })
-    },
-    DEL_VISITED_VIEWS: (state, view) => { // 关闭页签--删除路由数据的方法
-      for (let [i, v] of state.visitedviews.entries()) {
-        if (v.path === view.path) {
-          state.visitedviews.splice(i, 1)
-          break
-        }
+    )
+  },
+  ADD_CACHED_VIEW: (state, view) => {
+    if (state.cachedViews.includes(view.name)) return
+    if (!view.meta.noCache) {
+      state.cachedViews.push(view.name)
+    }
+  },
+
+  DEL_VISITED_VIEW: (state, view) => {
+    for (const [i, v] of state.visitedViews.entries()) {
+      if (v.path === view.path) {
+        state.visitedViews.splice(i, 1)
+        break
       }
     }
   },
-  actions: { // 调用这里去触发mutations，如何调用？在组件内使用this.$store.dispatch('action中对应名字', 参数)
-    addVisitedViews ({
-      commit
-    }, view) { // 通过解构赋值得到commit方法
-      commit('ADD_VISITED_VIEWS', view) // 去触发ADD_VISITED_VIEWS，并传入参数
-    },
-    delVisitedViews ({
-      commit
-    }, state, view) { // 删除数组存放的路由之后，需要再去刷新路由，这是一个异步的过程，需要有回掉函数，所以使用并返回promise对象，也可以让组件在调用的时候接着使用.then的方法
-      // commit('DEL_VISITED_VIEWS',view)
-      return new Promise((resolve) => { // resolve方法：未来成功后回掉的方法
-        commit('DEL_VISITED_VIEWS', view)
-        resolve([...state.visitedviews])
-      })
+  DEL_CACHED_VIEW: (state, view) => {
+    for (const i of state.cachedViews) {
+      if (i === view.name) {
+        const index = state.cachedViews.indexOf(i)
+        state.cachedViews.splice(index, 1)
+        break
+      }
     }
+  },
 
+  DEL_OTHERS_VISITED_VIEWS: (state, view) => {
+    state.visitedViews = state.visitedViews.filter(v => {
+      return v.meta.affix || v.path === view.path
+    })
+  },
+  DEL_OTHERS_CACHED_VIEWS: (state, view) => {
+    for (const i of state.cachedViews) {
+      if (i === view.name) {
+        const index = state.cachedViews.indexOf(i)
+        state.cachedViews = state.cachedViews.slice(index, index + 1)
+        break
+      }
+    }
+  },
+
+  DEL_ALL_VISITED_VIEWS: state => {
+    // keep affix tags
+    const affixTags = state.visitedViews.filter(tag => tag.meta.affix)
+    state.visitedViews = affixTags
+  },
+  DEL_ALL_CACHED_VIEWS: state => {
+    state.cachedViews = []
+  },
+
+  UPDATE_VISITED_VIEW: (state, view) => {
+    for (let v of state.visitedViews) {
+      if (v.path === view.path) {
+        v = Object.assign(v, view)
+        break
+      }
+    }
   }
 }
 
-export default tagsview
+const actions = {
+  addView({ dispatch }, view) {
+    dispatch('addVisitedView', view)
+    dispatch('addCachedView', view)
+  },
+  addVisitedView({ commit }, view) {
+    commit('ADD_VISITED_VIEW', view)
+  },
+  addCachedView({ commit }, view) {
+    commit('ADD_CACHED_VIEW', view)
+  },
+
+  delView({ dispatch, state }, view) {
+    return new Promise(resolve => {
+      dispatch('delVisitedView', view)
+      dispatch('delCachedView', view)
+      resolve({
+        visitedViews: [...state.visitedViews],
+        cachedViews: [...state.cachedViews]
+      })
+    })
+  },
+  delVisitedView({ commit, state }, view) {
+    return new Promise(resolve => {
+      commit('DEL_VISITED_VIEW', view)
+      resolve([...state.visitedViews])
+    })
+  },
+  delCachedView({ commit, state }, view) {
+    return new Promise(resolve => {
+      commit('DEL_CACHED_VIEW', view)
+      resolve([...state.cachedViews])
+    })
+  },
+
+  delOthersViews({ dispatch, state }, view) {
+    return new Promise(resolve => {
+      dispatch('delOthersVisitedViews', view)
+      dispatch('delOthersCachedViews', view)
+      resolve({
+        visitedViews: [...state.visitedViews],
+        cachedViews: [...state.cachedViews]
+      })
+    })
+  },
+  delOthersVisitedViews({ commit, state }, view) {
+    return new Promise(resolve => {
+      commit('DEL_OTHERS_VISITED_VIEWS', view)
+      resolve([...state.visitedViews])
+    })
+  },
+  delOthersCachedViews({ commit, state }, view) {
+    return new Promise(resolve => {
+      commit('DEL_OTHERS_CACHED_VIEWS', view)
+      resolve([...state.cachedViews])
+    })
+  },
+
+  delAllViews({ dispatch, state }, view) {
+    return new Promise(resolve => {
+      dispatch('delAllVisitedViews', view)
+      dispatch('delAllCachedViews', view)
+      resolve({
+        visitedViews: [...state.visitedViews],
+        cachedViews: [...state.cachedViews]
+      })
+    })
+  },
+  delAllVisitedViews({ commit, state }) {
+    return new Promise(resolve => {
+      commit('DEL_ALL_VISITED_VIEWS')
+      resolve([...state.visitedViews])
+    })
+  },
+  delAllCachedViews({ commit, state }) {
+    return new Promise(resolve => {
+      commit('DEL_ALL_CACHED_VIEWS')
+      resolve([...state.cachedViews])
+    })
+  },
+
+  updateVisitedView({ commit }, view) {
+    commit('UPDATE_VISITED_VIEW', view)
+  }
+}
+
+export default {
+  namespaced: true,
+  state,
+  mutations,
+  actions
+}
