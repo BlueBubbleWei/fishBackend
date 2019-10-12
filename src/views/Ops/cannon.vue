@@ -205,9 +205,10 @@
       />
       <el-table-column v-for="(item, index) in nameList" :key="index" :label="item">
         <template slot-scope="scope">
-          <span>{{ scope.row.list[index].num }}</span>
+          <span>{{ scope.row.list[index]?scope.row.list[index].num:0 }}</span>
         </template>
       </el-table-column>
+
     </el-table>
     <!-- 分页 -->
     <div class="block pagination">
@@ -235,7 +236,10 @@ export default {
       totalSize: 0,
       currentPage: 1,
       pageSize: 30,
-      nameList: [],
+      nameList: ['1炮', '5炮', '10炮', '20炮', '30炮', '40炮', '50炮', '60炮', '70炮', '80炮', '90炮', '100炮', '150炮', '200炮',
+        '250炮', '300炮', '350炮', '400炮', '450炮', '500炮', '550炮', '600炮', '650炮', '700炮', '750炮', '800炮', '850炮', '950炮', '1000炮',
+        '1500炮', '2000炮', '2500炮', '3000炮'
+      ],
       fullData: []
     }
   },
@@ -249,10 +253,9 @@ export default {
         endTime: this.end,
         page: this.currentPage,
         size: this.pageSize
-
       }
       this.tableData = []
-      console.log(this.params)
+      // console.log(this.params)
       getGunLevelStatistics(params).then(res => {
         const data = res.content
         data.map((item, index) => {
@@ -260,27 +263,15 @@ export default {
           const list = []
           eachData['registerTime'] = item.registerTime
           eachData['day'] = item.day
+          // 假设gunLevelList返回的是全部的数据，没有差值
           item.gunLevelList.map((ele, idx) => {
-            let currentIds = idx
-            if (currentIds === 0) { // 1炮
-              currentIds += 1
-            } else if (currentIds < 3) { // 10炮
-              currentIds *= 5
-            } else if (currentIds < 11) { // 100炮
-              currentIds = (currentIds - 1) * 10
-            } else if (currentIds < 29) { // 1000炮
-              currentIds = 100 * (currentIds - 10) + 50 * (currentIds - 11)
-            }
-            // if (index === 0) {
-            //   console.log('-----', (index > 2 && (this.nameList[index].length > this.nameList[index - 1].length)))
-            //   this.nameList.push(currentIds + '炮')
-            // }
-            list.push({ name: currentIds + '炮', 'num': currentIds })
+            list.push({ 'num': ele.num })
           })
           eachData['list'] = list
           this.tableData.push(eachData)
         })
-        console.log(this.nameList, 'this.nameList')
+        // console.log(this.nameList, 'this.nameList')
+        console.log(this.tableData)
         this.totalSize = Number.parseInt(res.totalElements)
       }).catch(res => {
         this.$message({

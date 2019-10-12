@@ -22,6 +22,7 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+    console.log('设置头像', avatar)
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
