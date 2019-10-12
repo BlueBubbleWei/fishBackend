@@ -1,44 +1,54 @@
 <template>
   <div class="profit">
 
-    <!-- <div class="userID">
-      <p>玩家ID</p>
-      <el-col :span="4">
-        <el-input
-          v-model="input"
-          class="user"
-          placeholder="请输入内容"
-        />
-      </el-col>
-      <el-button type="primary">查询</el-button>
-      <div class="source">
-        <p>渠道</p>
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <el-button type="primary">查询</el-button>
-      </div>
+    <div class="userID">
+      <!-- 查询玩家ID -->
+      <div class="first">
+        <div class="source">
+          <p>玩家ID</p>
+          <div>
+            <el-col
+              :span="24"
+              class="user"
+            >
+              <el-input
+                v-model="memberId"
+                placeholder="请输入玩家ID"
+              />
+            </el-col>
+          </div>
+        </div>
+        <!-- <div class="source">
+          <p>渠道</p>
+          <el-select v-model="source" placeholder="请选择">
+            <el-option
+              v-for="item in sources"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </div> -->
 
-      <div class="block time">
-        <span class="demonstration">选择时间</span>
-        <el-date-picker
-          v-model="value2"
-          type="datetime"
-          placeholder="选择日期时间"
-          align="right"
-          :picker-options="pickerOptions1"
-        />
+        <div class="block time">
+          <span class="demonstration">选择时间</span>
+          <el-date-picker
+            v-model="DataSelect"
+            type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions1"
+          />
+        </div>
+        <el-button type="primary" @click="handleData">查询</el-button>
       </div>
-      <el-button type="primary">查询</el-button>
-    </div> -->
+    </div>
     <!-- 数据表格 -->
     <el-table
-      :data="tableData3"
+      :data="tableData"
       border
       :header-cell-style="{'text-align':'center'}"
       :cell-style="{'text-align':'center'}"
@@ -47,58 +57,53 @@
     >
       <el-table-column
         fixed
-        prop="date"
+        prop="memberId"
         label="玩家ID"
         width="180"
       />
-      <el-table-column
+      <!-- <el-table-column
         prop="source"
         label="渠道"
         width="180"
-      />
+      /> -->
       <el-table-column
-        prop="total"
+        prop="rechargeNum"
         label="充值次数"
         width="180"
       />
       <el-table-column
-        prop="lanzuan"
+        prop="rechargeAmount"
         label="充值金额"
         width="180"
       />
       <el-table-column
-        prop="payPersons"
+        prop="createTime"
         label="注册时间"
         width="180"
       />
       <el-table-column
-        prop="payNums"
+        prop="onlineNumber"
         label="上线次数"
         width="180"
       />
       <el-table-column
-        prop="ARPPU"
+        prop="remainingGoldCoins"
         label="剩余金币"
         width="180"
       />
       <el-table-column
-        prop="newPayUser"
+        prop="lastOnlineTime"
         label="最后上线时间"
-        width="180"
-      />
-      <el-table-column
-        prop="newPayUserRate"
-        label="曾经最大金币"
       />
     </el-table>
     <!-- 分页 -->
     <div class="block pagination">
       <el-pagination
-        :current-page="currentPage4"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="page"
+        :page-sizes="[3, 5, 10, 30]"
+        :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -106,95 +111,139 @@
   </div>
 </template>
 <script >
+import { getMemberBaseInfo } from '@/api/player'
 export default {
   data() {
     return {
-      input: '', // 用户ID
-      value: '', // 渠道
-      options: [{
-        value: '选项1',
-        label: 'QQ'
-      }, {
-        value: '选项2',
-        label: '其他'
-      }],
+      memberId: '', // 用户ID
+      source: '', // 渠道
+      sources: [
+        {
+          value: '选项1',
+          label: 'QQ'
+        },
+        {
+          value: '选项2',
+          label: '其他'
+        }
+      ],
       pickerOptions1: {
         shortcuts: [
           {
             text: '今天',
             onClick(picker) {
-              picker.$emit('pick', new Date())
+              const end = new Date()
+              const start = new Date()
+              picker.$emit('pick', [start, end])
             }
           },
           {
             text: '昨天',
             onClick(picker) {
+              const end = new Date()
               const date = new Date()
               date.setTime(date.getTime() - 3600 * 1000 * 24)
-              picker.$emit('pick', date)
+              const start = new Date(date)
+              picker.$emit('pick', [start, end])
             }
           },
           {
             text: '7天',
             onClick(picker) {
+              const end = new Date()
               const date = new Date()
               date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', date)
+              const start = new Date(date)
+              picker.$emit('pick', [start, end])
             }
           },
           {
             text: '30天',
             onClick(picker) {
+              const end = new Date()
               const date = new Date()
               date.setTime(date.getTime() - 3600 * 1000 * 24 * 30)
-              picker.$emit('pick', date)
+              const start = new Date(date)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '当前月',
+            onClick(picker) {
+              const end = new Date()
+              const date = new Date()
+              const currentDay = date.getDate() - 1
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * currentDay)
+              const start = new Date(date)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '上个月',
+            onClick(picker) {
+              const date1 = new Date()
+              const date2 = new Date()
+              const currentDay = date1.getDate()
+              const lastDay = date1.getDate() - 1
+              date1.setTime(date1.getTime() - 3600 * 1000 * 24 * currentDay)
+              date2.setMonth(Number.parseInt(date2.getMonth()) - 1)
+              date2.setTime(date2.getTime() - 3600 * 1000 * 24 * lastDay)
+              const end = new Date(date1)
+              const start = new Date(date2)
+              picker.$emit('pick', [start, end])
             }
           }
-          // {  这个还没有计算
-          //   text: '当前月',
-          //   onClick(picker) {
-          //     const date = new Date()
-          //     date.setTime(date.getTime() - 3600 * 1000 * 24 * 30)
-          //     picker.$emit('pick', date)
-          //   }
-          // }
         ]
       },
-      value2: '',
-      tableData3: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4
+      DataSelect: [],
+      beginTime: new Date(),
+      endTime: new Date(),
+      tableData: [],
+      total: 0,
+      pageSize: 30,
+      page: 1
     }
   },
+  created() {
+    this.DataSelect = this.DataSelect.concat([this.beginTime, this.endTime])
+    this.selectData()
+  },
   methods: {
+    selectData() {
+      const params = {
+        beginTime: this.beginTime,
+        endTime: this.endTime,
+        memberId: this.memberId,
+        page: this.page,
+        size: this.pageSize
+      }
+      getMemberBaseInfo(params)
+        .then(res => {
+          console.log(res)
+          this.total = res.totalElements
+          this.tableData = res.content
+          // console.log(this.tableData)
+        })
+        .catch(res => {
+          this.$message({
+            type: 'error',
+            message: '获取数据失败'
+          })
+        })
+    },
+    handleData() {
+      this.page = 1
+      this.pageSize = 30
+      this.selectData()
+    },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      this.pageSize = val
+      this.pageSize = 1
+      this.selectData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
+      this.pageSize = val
+      this.selectData()
     }
   }
 }
@@ -204,32 +253,40 @@ export default {
   padding: 10px;
 }
 .userID {
-   margin-left: 10%;
   p {
     display: inline-block;
     float: left;
-    margin-right: 5px;
+    margin: 12px 4px 0 0;
   }
-}
-.source{
-  margin-left: 10%;
-  display: inline-block;
-   p {
-    margin-right: 5px;
+  .user {
+    margin-right: 4px;
     float: left;
   }
 }
+
+.source {
+  margin: 20px;
+  p {
+    margin: 10px 4px;
+    float: left;
+  }
+  div{
+    float: left;
+  }
+}
+.first {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .time {
-  clear: both;
-  margin-left: 10%;
-  text-align: center;
-  display: inline-block;
+  margin-right: 4px;
 }
 .table {
   margin-top: 10px;
   border-bottom: none;
 }
-.pagination{
+.pagination {
   float: right;
 }
 </style>

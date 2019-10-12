@@ -208,70 +208,6 @@
           <span>{{ scope.row.list[index].num }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column
-        prop="total"
-        label="1炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="5炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="10炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="20炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="30炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="80炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="50炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="60炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="70炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="80炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="90炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="100炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="150炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="200炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="250炮"
-      />
-      <el-table-column
-        prop="lanzuan"
-        label="300炮"
-      /> -->
     </el-table>
     <!-- 分页 -->
     <div class="block pagination">
@@ -315,6 +251,7 @@ export default {
         size: this.pageSize
 
       }
+      this.tableData = []
       console.log(this.params)
       getGunLevelStatistics(params).then(res => {
         const data = res.content
@@ -344,7 +281,6 @@ export default {
           this.tableData.push(eachData)
         })
         console.log(this.nameList, 'this.nameList')
-        console.log(this.tableData)
         this.totalSize = Number.parseInt(res.totalElements)
       }).catch(res => {
         this.$message({

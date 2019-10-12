@@ -53,28 +53,19 @@ export function resetMemberPassword(params) {
   })
 }
 
-export function getMemberGameInfo(params) {
-  // 针对玩家的相关操作数据查询
+export function getRechargeRecord(params) {
+  // 获取充值记录
   return request({
-    url: '/api/getMemberGameInfo',
+    url: '/api/getRechargeRecord',
     method: 'post',
     params
   })
 }
 
-export function resetMemberGiftPackage(params) {
-  // 重置玩家礼包
+export function downloadRechargeRecord(params) {
+  // 获取充值记录导出ExceL
   return request({
-    url: '/api/resetMemberGiftPackage',
-    method: 'post',
-    params
-  })
-}
-
-export function kickOffMember(params) {
-  // 踢除玩家
-  return request({
-    url: '/api/kickOffMember',
+    url: '/api/downloadRechargeRecord',
     method: 'post',
     params
   })

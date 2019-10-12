@@ -210,7 +210,6 @@ export default {
           const data = res
           this.total = data.totalElements
           this.tableData = data.content
-          console.log(this.tableData)
         })
         .catch(res => {
           this.$message({

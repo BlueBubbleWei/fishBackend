@@ -73,8 +73,8 @@ export const constantRoutes = [{
   redirect: '/dashboard',
   children: [{
     path: 'dashboard',
-    component: () => import('@/views/home/index'),
-    // component: () => import('@/views/dashboard/index'),
+    // component: () => import('@/views/home/index'),
+    component: () => import('@/views/stats/index'),
     name: 'H5捕鱼后台',
     meta: {
       title: 'H5捕鱼后台',
@@ -161,7 +161,8 @@ export const asyncRoutes = [
             import('@/views/Ops/payStatistics'),
         meta: {
           title: '付费点统计'
-        }
+        },
+        hidden: true
       },
       {
         path: 'kongTouSelect',
@@ -170,22 +171,23 @@ export const asyncRoutes = [
             import('@/views/Ops/kongTouSelect'),
         meta: {
           title: '空投'
-        }
+        },
+        hidden: true
       }]
   },
-  {
-    path: '/stats',
-    component: Layout,
-    redirect: '/stats/index',
-    children: [{
-      path: 'index',
-      name: '游戏金币流动统计',
-      component: () => import('@/views/stats/index'),
-      meta: {
-        title: '游戏金币流动统计'
-      }
-    }]
-  },
+  // {
+  //   path: '/stats',
+  //   component: Layout,
+  //   redirect: '/stats/index',
+  //   children: [{
+  //     path: 'index',
+  //     name: '游戏金币流动统计',
+  //     component: () => import('@/views/stats/index'),
+  //     meta: {
+  //       title: '游戏金币流动统计'
+  //     }
+  //   }]
+  // },
   {
     path: '/fishery',
     component: Layout,
@@ -218,7 +220,8 @@ export const asyncRoutes = [
       meta: {
         title: '平均在线游戏时间'
       }
-    }]
+    }],
+    hidden: true
   },
   {
     path: '/player',
@@ -231,18 +234,26 @@ export const asyncRoutes = [
     },
     children: [{
       path: 'index',
-      name: '基础信息',
+      name: '玩家基本信息',
       component: () => import('@/views/player/index'),
       meta: {
-        title: '基础信息'
+        title: '玩家基本信息'
       }
     },
     {
       path: 'propInfo',
-      name: '道具信息',
+      name: '玩家道具信息',
       component: () => import('@/views/player/propInfo'),
       meta: {
-        title: '道具信息'
+        title: '玩家道具信息'
+      }
+    },
+    {
+      path: 'operation',
+      name: '玩家相关操作',
+      component: () => import('@/views/player/operation'),
+      meta: {
+        title: '玩家相关操作'
       }
     },
     {
@@ -252,7 +263,8 @@ export const asyncRoutes = [
             import('@/views/player/coinChange'),
       meta: {
         title: '玩家金币变化'
-      }
+      },
+      hidden: true
     },
     {
       path: 'propChange',
@@ -276,24 +288,8 @@ export const asyncRoutes = [
     children: [
       {
         path: 'index',
-        name: '玩家基本信息',
-        component: () => import('@/views/service/index'),
-        meta: {
-          title: '玩家基本信息'
-        }
-      },
-      {
-        path: 'operation',
-        name: '玩家相关操作',
-        component: () => import('@/views/service/operation'),
-        meta: {
-          title: '玩家相关操作'
-        }
-      },
-      {
-        path: 'rechargeRecords',
         name: '充值记录查询',
-        component: () => import('@/views/service/rechargeRecords'),
+        component: () => import('@/views/service/index'),
         meta: {
           title: '充值记录查询'
         }
@@ -304,22 +300,47 @@ export const asyncRoutes = [
         component: () => import('@/views/service/exchange'),
         meta: {
           title: '兑换管理'
-        }
-      },
-      {
-        path: 'playerProps',
-        name: '玩家道具信息',
-        component: () => import('@/views/service/playerProps'),
-        meta: {
-          title: '玩家道具信息'
-        }
+        },
+        hidden: true
       },
       {
         path: 'account',
-        name: '账号管理',
+        name: '玩家账号列表',
         component: () => import('@/views/service/account'),
         meta: {
-          title: '账号管理'
+          title: '玩家账号列表'
+        }
+      },
+      {
+        path: 'frozenAccount',
+        name: '停封玩家',
+        component: () => import('@/views/service/frozenAccount'),
+        meta: {
+          title: '停封玩家'
+        }
+      },
+      {
+        path: 'releaseAccount',
+        name: '解封玩家',
+        component: () => import('@/views/service/releaseAccount'),
+        meta: {
+          title: '解封玩家'
+        }
+      },
+      {
+        path: 'resetPW',
+        name: '重置登录密码',
+        component: () => import('@/views/service/resetPW'),
+        meta: {
+          title: '重置登录密码'
+        }
+      },
+      {
+        path: 'newAccount',
+        name: '添加游客',
+        component: () => import('@/views/service/newAccount'),
+        meta: {
+          title: '添加游客'
         }
       }]
   },
