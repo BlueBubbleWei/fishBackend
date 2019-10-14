@@ -7,7 +7,8 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  info: {}
 }
 
 const mutations = {
@@ -22,7 +23,6 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
-    console.log('设置头像', avatar)
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
@@ -35,54 +35,29 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username, password: password }).then(response => {
-        // const { data } = response
-
-        console.log('come in', response)
+        const { user } = response
+        console.log('获取的用户信息', user)
         commit('SET_TOKEN', response.token)
+        commit('SET_AVATAR', user.avatar)
+        commit('SET_NAME', user.username)
+        commit('SET_ROLES', user.roles)
         setToken(response.token)
         resolve()
       }).catch(error => {
-        console.log('-------------', error)
+        console.log('------error-------', error)
         reject(error)
       })
     })
   },
-
-  // get user info
   getInfo({ commit, state }) {
+    // 登录后获取角色权限列表
     return new Promise((resolve, reject) => {
       const params = { 'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU2OTIzMzM0MywiaWF0IjoxNTY5MjI2MTQzfQ.Ha8pUC-trMa-FiP6LbEE2ix4O6l98enVbVGeMGOP3NZSbCnp8bHbY9VQXmaOJhvcdoidab1Xk2vpDgjlF9eJUA' }
       // state.token
       getInfo(params).then(response => {
-        let { data } = response
-        console.log('没有返回用户信息，只有用户列表')
-
-        // if (!data) {
-        //   reject('Verification failed, please Login again.')
-        // }
-        // const roles = 'admin'
-        // const name = 'admin'
-        // const avatar = ''
-        // const introduction = ''
-        data = {
-          'roles': 'admin',
-          'name': 'admin',
-          'avatar': '',
-          'introduction': 'sdad'
-        }
-
-        const { roles, name, avatar, introduction } = data
-
+        sessionStorage.router = JSON.stringify(response)
         // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
-
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
-        resolve(data)
+        resolve(response)
       }).catch(error => {
         reject(error)
       })

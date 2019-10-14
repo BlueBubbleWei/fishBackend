@@ -245,6 +245,14 @@ export default {
   },
   created() {
     this.getData()
+
+    if (sessionStorage.getItem('cannonData_beginTime') !== null) {
+      this.start = sessionStorage.getItem('cannonData_beginTime')
+      this.end = sessionStorage.getItem('cannonData_endTime')
+    } else {
+      this.start = new Date()
+      this.end = new Date()
+    }
   },
   methods: {
     getData() {
@@ -254,8 +262,9 @@ export default {
         page: this.currentPage,
         size: this.pageSize
       }
+      sessionStorage.setItem('cannonData_beginTime', this.start)
+      sessionStorage.setItem('cannonData_endTime', this.end)
       this.tableData = []
-      // console.log(this.params)
       getGunLevelStatistics(params).then(res => {
         const data = res.content
         data.map((item, index) => {
@@ -308,6 +317,10 @@ export default {
       this.getData()
       console.log(`当前页: ${val}`)
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    sessionStorage.removeItem('cannonData_beginTime')
+    sessionStorage.removeItem('cannonData_endTime')
   }
 }
 </script>

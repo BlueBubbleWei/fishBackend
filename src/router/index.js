@@ -73,8 +73,8 @@ export const constantRoutes = [{
   redirect: '/dashboard',
   children: [{
     path: 'dashboard',
-    // component: () => import('@/views/home/index'),
-    component: () => import('@/views/stats/index'),
+    component: () => import('@/views/home/index'),
+    // component: () => import('@/views/stats/index'),
     name: 'H5捕鱼后台',
     meta: {
       title: 'H5捕鱼后台',
@@ -342,7 +342,9 @@ export const asyncRoutes = [
         meta: {
           title: '添加游客'
         }
-      }]
+      }],
+    roles: ['admin'],
+    noCache: false // 查看一下带缓存的效果
   },
   {
     path: '/OpsAd',

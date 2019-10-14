@@ -205,8 +205,13 @@ export default {
     }
   },
   created() {
-    this.DataSelect = this.DataSelect.concat([this.beginTime, this.endTime])
     this.selectData()
+    this.DataSelect = []
+    if (sessionStorage.getItem('PB_beginTime') !== null) {
+      this.beginTime = sessionStorage.getItem('PB_beginTime')
+      this.endTime = sessionStorage.getItem('PB_endTime')
+    }
+    this.DataSelect = this.DataSelect.concat([this.beginTime, this.endTime])
   },
   methods: {
     selectData() {
@@ -217,6 +222,8 @@ export default {
         page: this.page,
         size: this.pageSize
       }
+      sessionStorage.setItem('PB_beginTime', this.beginTime)
+      sessionStorage.setItem('PB_endTime', this.endTime)
       getMemberBaseInfo(params)
         .then(res => {
           console.log(res)
@@ -245,6 +252,10 @@ export default {
       this.pageSize = val
       this.selectData()
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    sessionStorage.removeItem('PB_beginTime')
+    sessionStorage.removeItem('PB_endTime')
   }
 }
 </script>
